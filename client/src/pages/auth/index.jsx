@@ -56,6 +56,8 @@ const Auth = () => {
           },
           { withCredentials: true }
         );
+        console.log({ res });
+        
         if (res.data.user.id) {
           setUserInfo(res.data.user);
           if (res.data.user.profileSetup) {

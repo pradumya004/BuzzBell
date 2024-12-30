@@ -59,7 +59,7 @@ export const login = async (req, res, next) => {
             sameSite: "None",
             secure: true
         });
-        return res.status(200).json({
+    return res.status(200).json({
             user: {
                 id: user._id,
                 username: user.username,
