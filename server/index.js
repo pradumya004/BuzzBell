@@ -23,7 +23,8 @@ const _dirname = path.resolve();
 
 app.use(
     cors({
-        origin: [process.env.ORIGIN],
+        // origin: [process.env.ORIGIN],
+        origin: "https://buzzbell.onrender.com",
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
     })
