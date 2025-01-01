@@ -39,7 +39,6 @@ export const SocketProvider = ({ children }) => {
           (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.receiver._id)
         ) {
-          // console.log("Message Received: ", message);
           addMessage(message);
         }
         addContactsInDMContacts(message);
@@ -57,7 +56,6 @@ export const SocketProvider = ({ children }) => {
           selectedChatType !== undefined &&
           selectedChatData._id === message.channelId
         ) {
-          // console.log("Channel Message Received: ", message);
           addMessage(message);
         }
         addChannelInChannelList(message);

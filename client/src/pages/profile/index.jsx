@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { colors, getColor } from "@/lib/utils";
-import { FaCamera, FaTrash, FaPlus } from "react-icons/fa";
+import { FaCamera, FaTrash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -28,7 +28,6 @@ const Profile = () => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    console.log({ userInfo });
     if (userInfo.profileSetup) {
       setFirstName(userInfo.firstName);
       setLastName(userInfo.lastName);
@@ -69,7 +68,6 @@ const Profile = () => {
 
   const saveChanges = async () => {
     if (validateProfile()) {
-      // Call the update profile API here
       try {
         const res = await apiClient.post(
           UPDATE_PROFILE_ROUTE,
@@ -109,7 +107,6 @@ const Profile = () => {
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    // console.log({ file });
     if (file) {
       const formData = new FormData();
       formData.append("profile-image", file);
@@ -138,6 +135,7 @@ const Profile = () => {
       }
     } catch (error) {
       toast.error("Failed To Delete Profile Image");
+      console.log({ error });
     }
   };
 

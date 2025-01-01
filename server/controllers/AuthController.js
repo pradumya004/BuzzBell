@@ -2,9 +2,6 @@ import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import { compare } from "bcrypt";
 import { renameSync, unlinkSync } from "fs";
-// import { profile } from "console";
-
-
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -16,20 +13,19 @@ const createToken = (email, userId) => {
 
 export const register = async (req, res, next) => {
     try {
-        // const { username, email, password } = req.body;
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).json({ message: "All Fields Are Required" });
         }
         const user = await User.create({ email, password });
-        res.cookie("jwt", createToken(user.email, user._id), {
+        res.cookie("jwt", createToken(email, user.id), {
             maxAge,
             sameSite: "None",
             secure: true
         });
         return res.status(201).json({
             user: {
-                id: user._id,
+                id: user.id,
                 email: user.email,
                 profileSetup: user.profileSetup
             }
@@ -54,16 +50,20 @@ export const login = async (req, res, next) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect Password" });
         }
-        res.cookie("jwt", createToken(user.email, user._id, user.username), {
+        res.cookie("jwt", createToken(email, user.id), {
             maxAge,
             sameSite: "None",
             secure: true
         });
-    return res.status(200).json({
+        return res.status(200).json({
             user: {
-                id: user._id,
-                username: user.username,
+                id: user.id,
                 email: user.email,
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                color: user.color,
+                profilePicture: user.profilePicture,
                 profileSetup: user.profileSetup
             }
         });
@@ -81,7 +81,7 @@ export const getUserInfo = async (req, res, next) => {
             return res.status(400).json({ message: "User Not Found" });
         }
         return res.status(200).json({
-            id: userData._id,
+            id: userData.id,
             username: userData.username,
             email: userData.email,
             profileSetup: userData.profileSetup,
@@ -101,9 +101,11 @@ export const updateProfile = async (req, res, next) => {
     try {
         const { userId } = req;
         const { username, firstName, lastName, color } = req.body;
+
         if (!username || !firstName || !lastName) {
             return res.status(400).json({ message: "All Fields Are Required" });
         }
+
         const userData = await User.findByIdAndUpdate(userId, {
             username,
             firstName,
@@ -111,11 +113,12 @@ export const updateProfile = async (req, res, next) => {
             color,
             profileSetup: true
         }, { new: true, runValidators: true });
+
         if (!userData) {
             return res.status(400).json({ message: "User Not Found" });
         }
         return res.status(200).json({
-            id: userData._id,
+            id: userData.id,
             username: userData.username,
             email: userData.email,
             profileSetup: userData.profileSetup,

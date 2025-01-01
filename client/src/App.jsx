@@ -9,25 +9,24 @@ import { GET_USER_INFO } from "./utils/constants";
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
-  if (!userInfo) {
-    return <Navigate to="/auth" />;
-  }
-  return children;
+  const isAuthenticated = !!userInfo;
+
+  return isAuthenticated ? children : <Navigate to="/auth" />;
 };
 
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
-  if (userInfo) {
-    return <Navigate to="/chat" />;
-  }
-  return children;
+  const isAuthenticated = !!userInfo;
+
+  return isAuthenticated ? <Navigate to="/chat" /> : children;
 };
+
 const App = () => {
   const { userInfo, setUserInfo } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const getUserData = async () => {
       try {
         const res = await apiClient.get(GET_USER_INFO, {
           withCredentials: true,
@@ -37,7 +36,6 @@ const App = () => {
         } else {
           setUserInfo(undefined);
         }
-        console.log({ res });
       } catch ({ error }) {
         console.log({ error });
         setUserInfo(undefined);
@@ -47,7 +45,7 @@ const App = () => {
       setLoading(false);
     };
     if (!userInfo) {
-      fetchUser();
+      getUserData();
     } else {
       setLoading(false);
     }

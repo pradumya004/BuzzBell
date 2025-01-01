@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import Channel from "../models/ChannelModel.js";
 import User from "../models/UserModel.js";
 
-
 export const createChannel = async (req, res, next) => {
     try {
         const { name, members } = req.body;
         const userId = req.userId;
+    
         const admin = await User.findById(userId);
 
         if (!admin) {

@@ -1,4 +1,4 @@
-import Background from "@/assets/login2.png";
+// import Background from "@/assets/login2.png";
 import Victory from "@/assets/victory.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,8 +56,7 @@ const Auth = () => {
           },
           { withCredentials: true }
         );
-        console.log({ res });
-        
+
         if (res.data.user.id) {
           setUserInfo(res.data.user);
           if (res.data.user.profileSetup) {
@@ -66,7 +65,6 @@ const Auth = () => {
             navigate("/profile");
           }
         }
-        console.log({ res });
       } catch (error) {
         console.error("Login error details:", error.response?.data);
         toast.error(
@@ -78,7 +76,6 @@ const Auth = () => {
 
   const handleRegister = async () => {
     if (validateRegister()) {
-      // Call the register API here
       const res = await apiClient.post(
         REGISTER_ROUTE,
         {
@@ -87,11 +84,14 @@ const Auth = () => {
         },
         { withCredentials: true }
       );
-      if (res.data.user.id) {
+      if (res.status === 201) {
         setUserInfo(res.data.user);
         navigate("/profile");
       }
-      console.log({ res });
+      // if (res.data.user.id) {
+      //   setUserInfo(res.data.user);
+      //   navigate("/profile");
+      // }
     }
   };
 
@@ -147,13 +147,6 @@ const Auth = () => {
                 className="flex flex-col gap-4 mt-8"
                 value="register"
               >
-                {/* <Input
-                  placeholder="Username"
-                  type="text"
-                  className="rounded-md p-5 border-2 border-gray-300"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                /> */}
                 <Input
                   placeholder="Email"
                   type="email"
@@ -182,9 +175,9 @@ const Auth = () => {
             </Tabs>
           </div>
         </div>
-        <div className="hidden xl:flex justify-center items-center">
+        {/* <div className="hidden xl:flex justify-center items-center">
           <img src={Background} alt="Background Login" className="h-[700px]" />
-        </div>
+        </div> */}
       </div>
     </div>
   );

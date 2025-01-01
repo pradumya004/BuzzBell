@@ -69,7 +69,7 @@ export const createChatSlice = (set, get) => ({
         const channels = get().channels;
         const data = channels.find((c) => c._id === channel.channelId);
         const index = channels.findIndex((c) => c._id === channel.channelId);
-        console.log({ channels, data, index });
+        // console.log({ channels, data, index });
         if (index !== -1 && index !== undefined) {
             channels.splice(index, 1);
             channels.unshift(data);

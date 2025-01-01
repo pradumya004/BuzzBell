@@ -78,11 +78,6 @@ const setupSocket = (server) => {
                         io.to(memberSocketId).emit("receive-channel-message", finalData);
                     }
                 });
-                // const adminSocketId = userSocketMap.get(channel.admin._id.toString());
-
-                // if (adminSocketId) {
-                //     io.to(adminSocketId).emit("receive-channel-message", finalData);
-                // }
             }
         } catch (error) {
             console.error({ error });

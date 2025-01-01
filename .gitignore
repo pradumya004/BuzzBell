@@ -1,6 +1,2 @@
-# Ignore node_modules from client and server
-client/node_modules/
-server/node_modules/
-
-# Ignore uploads folder in server
-server/uploads/
+.env
+node_modules

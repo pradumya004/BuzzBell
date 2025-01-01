@@ -12,8 +12,7 @@ export const searchContacts = async (req, res, next) => {
         const sanitizedSearchTerm = searchTerm.replace(/[.*+?^$(){}|[\]\\]/g, "\\$&");
 
         const regex = new RegExp(sanitizedSearchTerm, "i");
-
-        // Username regex from your validation
+        
         const usernameRegex = /^[a-zA-Z][a-zA-Z0-9._@$]*$/;
 
         const contacts = await User.find({

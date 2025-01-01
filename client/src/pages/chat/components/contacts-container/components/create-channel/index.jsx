@@ -41,6 +41,8 @@ const CreateChannel = () => {
           withCredentials: true,
         });
         setAllContacts(res.data.contacts);
+        // console.log("All Contacts:", res.data.contacts);
+        
       } catch (err) {
         console.error("Failed to fetch contacts:", {
           status: err.response?.status,
@@ -56,11 +58,13 @@ const CreateChannel = () => {
   const createChannel = async () => {
     try {
       if (channelName.length > 0 && selectedContacts.length > 0) {
+        // console.log("Selected Contacts:", selectedContacts);
+        
         const res = await apiClient.post(
           CREATE_CHANNEL_ROUTE,
           {
             name: channelName,
-            members: selectedContacts.map((contact) => contact._id),
+            members: selectedContacts.map((contact) => contact.value),
           },
           { withCredentials: true }
         );
@@ -70,8 +74,6 @@ const CreateChannel = () => {
           setSelectedContacts([]);
           addChannel(res.data.channel);
           setNewChannel(false);
-        //   setSelectedChatType("channel");
-        //   setSelectedChatData(res.data.channel);
         }
       }
     } catch (err) {
