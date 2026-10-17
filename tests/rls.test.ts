@@ -1,6 +1,6 @@
 // Runs against a real Supabase project (.env.local). Signs in three guests and
 // checks that Row Level Security holds when a client misbehaves on purpose.
-// Test users are deleted afterwards.
+// Test users are deleted afterwards when SUPABASE_DB_URL is set.
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import pg from "pg";
@@ -8,7 +8,7 @@ import { config } from "dotenv";
 
 config({ path: ".env.local", quiet: true });
 const { VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key, SUPABASE_DB_URL: dbUrl } = process.env;
-const enabled = !!(url && key && dbUrl);
+const enabled = !!(url && key);
 
 const client = () => createClient(url!, key!, { auth: { persistSession: false, autoRefreshToken: false } });
 
@@ -37,7 +37,7 @@ describe.skipIf(!enabled)("row level security", () => {
   }, 30_000);
 
   afterAll(async () => {
-    if (!a) return;
+    if (!a || !dbUrl) return;
     const db = new pg.Client({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } });
     await db.connect();
     await db.query("delete from public.conversations where dm_key like any($1)", [[`%${a.id}%`, `%${b.id}%`, `%${outsider.id}%`]]);

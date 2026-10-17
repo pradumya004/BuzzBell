@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "db": "node scripts/db.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:sql": "node tests/sql.mjs",
+    "bundle": "node scripts/bundle.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
@@ -20,6 +22,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.14",
     "@eslint/js": "^9.25.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.1.2",
