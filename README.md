@@ -6,9 +6,11 @@ Realtime chat with no app server. The browser talks straight to Postgres through
 
 **Live:** [buzz-bell-ycsb.vercel.app](https://buzz-bell-ycsb.vercel.app). Click **Try it as a guest**, no signup. Open a private window as a second guest to watch typing, presence and messages arrive live.
 
-![Two BuzzBell windows: Riya types, Sam sees the typing indicator, the message lands, Sam reacts and replies, Riya reacts back](docs/demo.webp)
+[![Film: Riya sends a message, it travels into Sam's window, Sam reacts, the bubble opens into the RLS policy that lets only members read it](docs/film.webp)](docs/launch.mp4)
 
-[Watch the 15 s launch clip](docs/launch.mp4)
+[Watch the 14 s film (MP4)](docs/launch.mp4). Below, a real recording of two guests:
+
+![Two BuzzBell windows: Riya types, Sam sees the typing indicator, the message lands, Sam reacts and replies, Riya reacts back](docs/demo.webp)
 
 ## Features
 
