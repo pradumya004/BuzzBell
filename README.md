@@ -2,9 +2,11 @@
 
 Realtime chat on Postgres. Channels, DMs, reactions, image attachments, presence, typing indicators and full-text search, live across every open tab. There is no app server: Postgres Row Level Security is the whole authorization layer, and the tests try to break it.
 
-**Live:** _deploying_ · one click, no signup: **Try it as a guest**, then open a second tab or private window to chat with yourself.
+One click, no signup: **Try it as a guest**, then open a second tab or private window to chat with yourself.
 
-<!-- screenshots: docs/landing.png, docs/app.png -->
+![Two BuzzBell windows: Riya types, Sam sees the typing indicator, the message lands, Sam reacts and replies, Riya reacts back](docs/demo.webp)
+
+[Watch the 15 s launch clip](docs/launch.mp4)
 
 ## What's in it
 

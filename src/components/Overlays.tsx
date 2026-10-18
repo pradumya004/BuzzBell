@@ -6,6 +6,7 @@ import { supabase } from "../lib/supabase";
 import { useStore } from "../lib/store";
 import { formatAgo } from "../lib/format";
 import { Avatar } from "./Avatar";
+import type { Profile } from "../lib/types";
 
 function Sheet({ open, onClose, children }: { open: boolean; onClose: () => void; children: ReactNode }) {
   useEffect(() => {
@@ -130,7 +131,7 @@ export function NewChat({
   onClose: () => void;
   onOpen: (id: string) => void;
 }) {
-  const { profiles, me, online, refreshInbox, toast } = useStore();
+  const { me, online, refreshInbox, toast } = useStore();
   const [tab, setTab] = useState<"channel" | "dm">("channel");
   const [name, setName] = useState("");
   const [topic, setTopic] = useState("");
@@ -146,10 +147,27 @@ export function NewChat({
     }
   }, [initial]);
 
-  const people = [...profiles.values()]
-    .filter((p) => p.id !== me?.id && p.display_name.toLowerCase().includes(q.toLowerCase()))
-    .sort((a, b) => Number(online.has(b.id) || b.is_bot) - Number(online.has(a.id) || a.is_bot))
-    .slice(0, 40);
+  const [found, setFound] = useState<Profile[]>([]);
+
+  // search the server, not the session cache, so people who joined later show up
+  useEffect(() => {
+    if (initial !== "dm" && tab !== "dm") return;
+    const t = setTimeout(async () => {
+      let query = supabase
+        .from("profiles")
+        .select("id, username, display_name, avatar_hue, is_guest, is_bot")
+        .order("created_at", { ascending: false })
+        .limit(40);
+      if (q.trim()) query = query.ilike("display_name", `%${q.trim().replace(/[%_]/g, "")}%`);
+      const { data } = await query;
+      setFound(data ?? []);
+    }, 150);
+    return () => clearTimeout(t);
+  }, [q, tab, initial]);
+
+  const people = found
+    .filter((p) => p.id !== me?.id)
+    .sort((a, b) => Number(online.has(b.id) || b.is_bot) - Number(online.has(a.id) || a.is_bot));
 
   const done = (id: string) => {
     refreshInbox();

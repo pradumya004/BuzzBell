@@ -107,19 +107,29 @@ export function Room({ room, onBack }: { room: InboxRow; onBack: () => void }) {
     [onMessage, room.id, meId, ensureProfiles, markRead],
   );
 
+  const messageIds = useRef(new Set<number>());
+  useEffect(() => {
+    messageIds.current = new Set(messages.map((m) => m.id));
+  }, [messages]);
+
+  const applyReaction = useCallback((r: Reaction, removed: boolean) => {
+    setReactions((prev) => {
+      const next = new Map(prev);
+      const list = (next.get(r.message_id) ?? []).filter((x) => !(x.user_id === r.user_id && x.emoji === r.emoji));
+      next.set(r.message_id, removed ? list : [...list, r]);
+      return next;
+    });
+  }, []);
+
   useEffect(
     () =>
       onReaction((payload) => {
         const r = (payload.eventType === "DELETE" ? payload.old : payload.new) as Reaction;
-        setReactions((prev) => {
-          if (!prev.has(r.message_id)) return prev;
-          const next = new Map(prev);
-          const list = (next.get(r.message_id) ?? []).filter((x) => !(x.user_id === r.user_id && x.emoji === r.emoji));
-          next.set(r.message_id, payload.eventType === "DELETE" ? list : [...list, r]);
-          return next;
-        });
+        // reactions carry no room id, so only accept ones for messages shown here
+        if (!messageIds.current.has(r.message_id)) return;
+        applyReaction(r, payload.eventType === "DELETE");
       }),
-    [onReaction],
+    [onReaction, applyReaction],
   );
 
   // typing indicator over Broadcast: nothing touches the database
@@ -238,12 +248,17 @@ export function Room({ room, onBack }: { room: InboxRow; onBack: () => void }) {
   const react = useCallback(
     async (m: Message, emoji: string) => {
       const mine = reactions.get(m.id)?.some((r) => r.user_id === meId && r.emoji === emoji);
+      const reaction = { message_id: m.id, user_id: meId, emoji };
+      applyReaction(reaction, !!mine);
       const { error } = mine
         ? await supabase.from("reactions").delete().match({ message_id: m.id, user_id: meId, emoji })
         : await supabase.from("reactions").insert({ message_id: m.id, user_id: meId, emoji });
-      if (error) toast("Couldn't react", "error");
+      if (error) {
+        applyReaction(reaction, !mine);
+        toast("Couldn't react", "error");
+      }
     },
-    [reactions, meId, toast],
+    [reactions, meId, toast, applyReaction],
   );
 
   const edit = useCallback(
@@ -263,7 +278,11 @@ export function Room({ room, onBack }: { room: InboxRow; onBack: () => void }) {
   );
 
   const rows = useMemo(() => groupMessages(messages), [messages]);
-  const typers = [...typing.keys()].map((id) => profiles.get(id)?.display_name.split(" ")[0] ?? "Someone");
+  const typers = [...typing.keys()].map((id) => {
+    const p = profiles.get(id);
+    if (!p) return "Someone";
+    return p.is_guest ? p.display_name : p.display_name.split(" ")[0];
+  });
   const isChannel = room.kind === "channel";
 
   return (
@@ -315,8 +334,8 @@ export function Room({ room, onBack }: { room: InboxRow; onBack: () => void }) {
         ) : (
           rows.map((r) =>
             r.type === "day" ? (
-              <div key={r.key} className="sticky top-1 z-[5] my-4 flex justify-center">
-                <span className="glass rounded-full border border-line px-3 py-1 text-[11.5px] font-medium text-fg2">{r.label}</span>
+              <div key={r.key} className="my-5 flex justify-center">
+                <span className="text-[12px] font-medium text-fg3">{r.label}</span>
               </div>
             ) : (
               <MessageItem

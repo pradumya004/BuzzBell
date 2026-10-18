@@ -4,13 +4,18 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import pg from "pg";
+import WebSocket from "ws";
 import { config } from "dotenv";
 
 config({ path: ".env.local", quiet: true });
 const { VITE_SUPABASE_URL: url, VITE_SUPABASE_ANON_KEY: key, SUPABASE_DB_URL: dbUrl } = process.env;
 const enabled = !!(url && key);
 
-const client = () => createClient(url!, key!, { auth: { persistSession: false, autoRefreshToken: false } });
+const client = () =>
+  createClient(url!, key!, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    realtime: { transport: WebSocket as never },
+  });
 
 async function guest() {
   const c = client();

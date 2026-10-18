@@ -91,14 +91,8 @@ export function Landing() {
       className="relative flex min-h-full flex-col overflow-hidden bg-bg"
     >
       <motion.div aria-hidden style={far} className="pointer-events-none absolute inset-[-10%]">
-        <div className="absolute top-[-10%] right-[-5%] h-[60vh] w-[60vh] rounded-full bg-[var(--g2)] opacity-[var(--orb)] blur-[120px]" />
-        <div className="absolute bottom-[-20%] left-[10%] h-[55vh] w-[55vh] rounded-full bg-[var(--g3)] opacity-[var(--orb)] blur-[120px]" />
-        <div className="absolute bottom-[10%] left-[-10%] h-[40vh] w-[40vh] rounded-full bg-[var(--g1)] opacity-[calc(var(--orb)*0.7)] blur-[110px]" />
+        <div className="absolute top-[-10%] right-[-5%] h-[70vh] w-[70vh] rounded-full bg-[var(--g2)] opacity-[calc(var(--orb)*0.55)] blur-[140px]" />
       </motion.div>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.5] [background-image:radial-gradient(var(--line)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
-      />
 
       <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-6">
         <div className="flex items-center gap-2 text-[17px] font-semibold tracking-tight">
@@ -117,18 +111,10 @@ export function Landing() {
 
       <section className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-6 py-12 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3 py-1 text-[13px] text-fg2 glass"
-          >
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" /> Realtime chat on Postgres
-          </motion.p>
-          <h1 className="text-[clamp(44px,7vw,84px)] leading-[1.02] font-bold tracking-[-0.04em]">
+          <h1 className="text-[clamp(44px,7vw,84px)] leading-[1.03] font-semibold tracking-[-0.035em]">
             <Word delay={0.1}>Chat</Word> <Word delay={0.18}>that</Word>
             <br />
-            <span className="text-gradient">
+            <span className="text-fg3">
               <Word delay={0.26}>keeps</Word> <Word delay={0.34}>up.</Word>
             </span>
           </h1>

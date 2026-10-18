@@ -82,7 +82,7 @@ for (const id of ids) {
 }
 const [A, B, C] = ids;
 const pa = (await q("select display_name, is_guest from profiles where id=$1", [A])).rows[0];
-check("guest gets profile with generated name", pa?.is_guest && /^Guest /.test(pa.display_name), JSON.stringify(pa));
+check("guest gets profile with generated name", pa?.is_guest && /^[A-Z][a-z]+ [A-Z][a-z]+$/.test(pa.display_name), JSON.stringify(pa));
 
 const inboxC = await as(C, () => q("select name, kind from inbox()"));
 check("guest auto-joined 3 channels", inboxC.rows.filter((r) => r.kind === "channel").length === 3, JSON.stringify(inboxC.rows));
