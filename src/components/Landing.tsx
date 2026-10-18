@@ -9,23 +9,9 @@ const GitHubMark = () => (
 );
 import { supabase } from "../lib/supabase";
 import { useStore } from "../lib/store";
+import { Logo } from "./Logo";
 
 const ease = [0.16, 1, 0.3, 1] as const;
-
-function Word({ children, delay }: { children: string; delay: number }) {
-  return (
-    <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
-      <motion.span
-        className="inline-block"
-        initial={{ y: "110%" }}
-        animate={{ y: 0 }}
-        transition={{ duration: 1.1, ease, delay }}
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
-}
 
 // Each layer moves by depth * pointer offset, so nearer things move more.
 function useParallax(depth: number, x: ReturnType<typeof useSpring>, y: ReturnType<typeof useSpring>) {
@@ -48,7 +34,6 @@ export function Landing() {
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 60, damping: 18, mass: 0.6 });
   const sy = useSpring(my, { stiffness: 60, damping: 18, mass: 0.6 });
-  const far = useParallax(-0.6, sx, sy);
   const mid = useParallax(0.35, sx, sy);
   const layers = [useParallax(0.55, sx, sy), useParallax(0.3, sx, sy), useParallax(0.8, sx, sy)];
 
@@ -90,15 +75,9 @@ export function Landing() {
       onPointerMove={onPointer}
       className="relative flex min-h-full flex-col overflow-hidden bg-bg"
     >
-      <motion.div aria-hidden style={far} className="pointer-events-none absolute inset-[-10%]">
-        <div className="absolute top-[-10%] right-[-5%] h-[70vh] w-[70vh] rounded-full bg-[var(--g2)] opacity-[calc(var(--orb)*0.55)] blur-[140px]" />
-      </motion.div>
-
       <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-6">
         <div className="flex items-center gap-2 text-[17px] font-semibold tracking-tight">
-          <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-gradient-to-br from-[var(--g1)] via-[var(--g2)] to-[var(--g3)] text-white">
-            ✦
-          </span>
+          <Logo size={32} />
           BuzzBell
         </div>
         <a
@@ -111,27 +90,30 @@ export function Landing() {
 
       <section className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-6 py-12 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <h1 className="text-[clamp(44px,7vw,84px)] leading-[1.03] font-semibold tracking-[-0.035em]">
-            <Word delay={0.1}>Chat</Word> <Word delay={0.18}>that</Word>
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease }}
+            className="text-[clamp(44px,7vw,84px)] leading-[1.03] font-semibold tracking-[-0.035em]"
+          >
+            Chat that
             <br />
-            <span className="text-fg3">
-              <Word delay={0.26}>keeps</Word> <Word delay={0.34}>up.</Word>
-            </span>
-          </h1>
+            <span className="text-fg3">keeps up.</span>
+          </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.6 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
             className="mt-6 max-w-md text-[19px] leading-relaxed text-fg2"
           >
-            Channels, DMs, reactions, presence and typing, live across every tab. Row Level Security decides who
-            sees what.
+            Channels, DMs, reactions, presence and typing, live across every tab. No app server: Postgres Row
+            Level Security decides who sees what.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease, delay: 0.75 }}
+            transition={{ duration: 0.6, ease, delay: 0.3 }}
             className="mt-10 max-w-sm"
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -147,7 +129,7 @@ export function Landing() {
                   <button
                     onClick={guest}
                     disabled={busy}
-                    className="group inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 text-[16px] font-medium text-white shadow-[0_8px_30px_-8px_var(--accent)] transition active:scale-[0.98] disabled:opacity-70"
+                    className="group inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 text-[16px] font-medium text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-70"
                   >
                     {busy ? <Loader2 size={18} className="animate-spin" /> : null}
                     Try it as a guest
@@ -159,7 +141,7 @@ export function Landing() {
                   >
                     <Mail size={18} /> Use email
                   </button>
-                  <p className="w-full pt-1 text-[13px] text-fg3">No signup. Open a second tab to chat with yourself.</p>
+                  <p className="w-full pt-1 text-[13px] text-fg3">No signup. Open a private window as a second guest to chat with yourself.</p>
                 </motion.div>
               ) : (
                 <motion.form
@@ -226,7 +208,7 @@ export function Landing() {
           style={mid}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease, delay: 0.3 }}
+          transition={{ duration: 0.7, ease, delay: 0.2 }}
           className="relative hidden h-[440px] lg:block"
         >
           {bubbles.map((b, i) => (
@@ -235,16 +217,13 @@ export function Landing() {
               style={{ ...layers[i], top: b.top, left: b.left }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease, delay: 0.6 + i * 0.18 }}
+              transition={{ duration: 0.6, ease, delay: 0.3 + i * 0.1 }}
               className="absolute"
             >
               <div
                 className={`glass flex max-w-[300px] items-end gap-3 rounded-[22px] border border-line p-3 pr-4 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.45)] ${b.me ? "flex-row-reverse" : ""}`}
               >
-                <span
-                  className="h-9 w-9 shrink-0 rounded-full"
-                  style={{ background: `linear-gradient(135deg, hsl(${b.hue} 80% 62%), hsl(${b.hue + 40} 75% 48%))` }}
-                />
+                <span className="h-9 w-9 shrink-0 rounded-full" style={{ background: `hsl(${b.hue} 62% 50%)` }} />
                 <div className={b.me ? "text-right" : ""}>
                   <div className="text-[12px] font-medium text-fg2">{b.who}</div>
                   <div
@@ -260,7 +239,7 @@ export function Landing() {
             style={{ ...layers[1], top: "78%", left: "40%" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.4 }}
+            transition={{ delay: 0.8 }}
             className="glass absolute flex items-center gap-1.5 rounded-full border border-line px-4 py-3"
           >
             {[0, 1, 2].map((d) => (
@@ -273,6 +252,27 @@ export function Landing() {
             ))}
           </motion.div>
         </motion.div>
+        <motion.ul
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+          className="space-y-2.5 lg:hidden"
+        >
+          {bubbles.map((b) => (
+            <li key={b.who} className={`flex items-end gap-2.5 ${b.me ? "flex-row-reverse" : ""}`}>
+              <span className="h-7 w-7 shrink-0 rounded-full" style={{ background: `hsl(${b.hue} 62% 50%)` }} />
+              <div className={`max-w-[78%] ${b.me ? "text-right" : ""}`}>
+                <div className="mb-0.5 text-[11.5px] font-medium text-fg3">{b.who}</div>
+                <div
+                  className={`rounded-2xl px-3.5 py-2 text-left text-[14.5px] ${b.me ? "bg-me text-white" : "bg-elev shadow-[0_0_0_1px_var(--line)]"}`}
+                >
+                  {b.text}
+                </div>
+              </div>
+            </li>
+          ))}
+        </motion.ul>
       </section>
 
       <footer className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-6 text-[13px] text-fg3">

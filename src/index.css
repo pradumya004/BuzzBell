@@ -12,10 +12,6 @@
   --fg3: #a1a1a6;
   --accent: #0071e3;
   --bubble-me: #0071e3;
-  --g1: #059669;
-  --g2: #0071e3;
-  --g3: #7c3aed;
-  --orb: 0.35;
   color-scheme: light;
 }
 
@@ -29,10 +25,6 @@
   --fg3: #6e6e73;
   --accent: #2997ff;
   --bubble-me: #0a84ff;
-  --g1: #34d399;
-  --g2: #2997ff;
-  --g3: #a78bfa;
-  --orb: 0.5;
   color-scheme: dark;
 }
 
@@ -63,13 +55,6 @@ body {
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-
-.text-gradient {
-  background: linear-gradient(90deg, var(--g1), var(--g2) 55%, var(--g3));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 .glass {

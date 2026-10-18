@@ -169,7 +169,7 @@ export function Room({ room, onBack }: { room: InboxRow; onBack: () => void }) {
   useLayoutEffect(() => {
     const el = scroller.current;
     if (el && stick.current) el.scrollTop = el.scrollHeight;
-  }, [messages, typing.size]);
+  }, [messages, reactions, profiles, typing.size]);
 
   const onScroll = async () => {
     const el = scroller.current;
@@ -328,7 +328,7 @@ export function Room({ room, onBack }: { room: InboxRow; onBack: () => void }) {
           </div>
         ) : messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-            <div className="text-gradient text-[28px] font-bold tracking-tight">Say hello</div>
+            <div className="text-[22px] font-semibold tracking-tight">Say hello</div>
             <p className="mt-2 max-w-xs text-[14px] text-fg2">This is the start of {isChannel ? `#${room.name}` : `your chat with ${room.name}`}.</p>
           </div>
         ) : (

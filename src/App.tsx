@@ -50,10 +50,6 @@ function Shell() {
 
   return (
     <div className="relative flex h-full overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-32 h-[480px] w-[480px] rounded-full bg-[var(--g2)] opacity-[calc(var(--orb)*0.35)] blur-[140px]" />
-        <div className="absolute -right-40 -bottom-40 h-[520px] w-[520px] rounded-full bg-[var(--g3)] opacity-[calc(var(--orb)*0.3)] blur-[140px]" />
-      </div>
       <div className={clsx("relative h-full w-full shrink-0 md:w-[300px]", room && "hidden md:block")}>
         <Sidebar activeId={activeId} onOpen={open} onSearch={() => setSearch(true)} onNew={setNewTab} />
       </div>

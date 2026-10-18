@@ -1,10 +1,58 @@
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
-import { Hash, LogOut, Moon, Plus, Search, Sun } from "lucide-react";
+import { useState } from "react";
+import { Check, Copy, Hash, LogOut, Moon, Plus, Search, Sun, X } from "lucide-react";
 import { useStore, useTheme } from "../lib/store";
 import { formatAgo } from "../lib/format";
 import type { InboxRow } from "../lib/types";
 import { Avatar } from "./Avatar";
+import { Logo } from "./Logo";
+
+const isMac = /Mac|iPhone|iPad/.test(navigator.userAgent);
+const TIP_KEY = "tip-dismissed";
+
+function readTip() {
+  try {
+    return localStorage.getItem(TIP_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function LiveTip() {
+  const [hidden, setHidden] = useState(readTip);
+  const [copied, setCopied] = useState(false);
+  if (hidden) return null;
+
+  const dismiss = () => {
+    setHidden(true);
+    try {
+      localStorage.setItem(TIP_KEY, "1");
+    } catch {
+      // private mode: the tip just comes back next visit
+    }
+  };
+  const copy = async () => {
+    await navigator.clipboard?.writeText(location.origin).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <div className="mx-3 mb-3 rounded-xl border border-line bg-elev p-3 text-[12.5px] leading-snug text-fg2">
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-medium text-fg">See it live with two people</p>
+        <button onClick={dismiss} aria-label="Dismiss tip" className="-m-1 rounded-md p-1 text-fg3 hover:text-fg">
+          <X size={14} />
+        </button>
+      </div>
+      <p className="mt-1">Open BuzzBell in a private window as a second guest and message yourself. Typing and presence show up live.</p>
+      <button onClick={copy} className="mt-2 inline-flex items-center gap-1.5 font-medium text-accent">
+        {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied" : "Copy link"}
+      </button>
+    </div>
+  );
+}
 
 type Props = {
   activeId: string | null;
@@ -98,9 +146,7 @@ export function Sidebar({ activeId, onOpen, onSearch, onNew }: Props) {
   return (
     <aside className="glass flex h-full w-full flex-col border-r border-line">
       <div className="flex items-center gap-2 px-4 pt-5 pb-3 text-[17px] font-semibold tracking-tight">
-        <span className="flex h-7 w-7 items-center justify-center rounded-[9px] bg-gradient-to-br from-[var(--g1)] via-[var(--g2)] to-[var(--g3)] text-[13px] text-white">
-          ✦
-        </span>
+        <Logo size={28} />
         BuzzBell
       </div>
       <div className="px-3">
@@ -109,13 +155,14 @@ export function Sidebar({ activeId, onOpen, onSearch, onNew }: Props) {
           className="flex h-9 w-full items-center gap-2 rounded-xl bg-line/70 px-3 text-[13.5px] text-fg3 transition hover:text-fg2"
         >
           <Search size={15} /> Search messages
-          <kbd className="ml-auto rounded-md border border-line px-1.5 text-[11px]">⌘K</kbd>
+          <kbd className="ml-auto rounded-md border border-line px-1.5 font-sans text-[11px] pointer-coarse:hidden">{isMac ? "⌘K" : "Ctrl K"}</kbd>
         </button>
       </div>
       <nav className="scroll-thin flex-1 overflow-y-auto px-2 pb-4">
         {section("Channels", channels, "channel")}
         {section("Direct messages", dms, "dm")}
       </nav>
+      <LiveTip />
       <div className="flex items-center gap-3 border-t border-line px-3 py-3">
         <Avatar profile={me} size={34} online />
         <div className="min-w-0 flex-1">

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { Bot } from "lucide-react";
 import type { Profile } from "../lib/types";
 
 const initials = (name: string) =>
@@ -27,11 +28,11 @@ export function Avatar({
         className="flex h-full w-full items-center justify-center rounded-full font-semibold text-white select-none"
         style={{
           fontSize: size * 0.38,
-          background: `linear-gradient(135deg, hsl(${hue} 80% 62%), hsl(${(hue + 40) % 360} 75% 48%))`,
+          background: `hsl(${hue} 62% 50%)`,
         }}
         aria-hidden
       >
-        {profile?.is_bot ? "✦" : initials(profile?.display_name ?? "?")}
+        {profile?.is_bot ? <Bot size={size * 0.55} /> : initials(profile?.display_name ?? "?")}
       </span>
       {online !== undefined && (
         <span
